@@ -96,6 +96,8 @@ Demo 支持使用音视频 2.0 能力来展示视频、音频通话场景，您�
 cmake . -B build -G"Visual Studio 15 2017" -T"v141_xp" -DBUILD_WITH_NERTC_G2=ON -DCMAKE_BUILD_TYPE=Debug
 cmake --build build --config Debug --target install
 ```
+注意：用vs2017编译时，要调整exe的生成路径到bin目录
+右键“nim_demo”——>属性——>常规——>输出目录
 
 ## 交流
 
