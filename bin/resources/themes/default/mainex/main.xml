@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<Window size="950,700" mininfo="950,700" caption="0,0,0,68" sizebox="4,4,4,4" textid="STRID_MIANWINDOW_TITLE" shadowattached="false">	
+<Window size="850,600" mininfo="850,600" caption="0,0,0,68" sizebox="4,4,4,4" textid="STRID_MIANWINDOW_TITLE" shadowattached="false">	
 	<Box bkcolor="bk_wnd_darkcolor"> 
-		<VBox name="main_bar" width="64"  halign="left" >
+		<VBox name="main_bar" width="64"  halign="left"  bkcolor="bk_main_menu_color">
 			<Box width="auto" height="auto" halign="center" margin="0,20,0,0">
 				<Box width="auto" height="auto"  >
 					<Button name="btn_header" width="48" height="48" borderround="48,48" cursortype="hand" bkimage="header.png"/>
@@ -9,17 +9,17 @@
 					<Button name="btn_online_state" bkimage="..\menu\icon_online.png" margin="0,0,0,0" valign="bottom" halign="right" tooltiptextid="STRID_MAINWINDOW_ONLINE_STATE" />
 				</Box>
 			</Box>
-			<VBox name="main_plugin_bar" padding="0,50,0,10" />
-			<VBox name="simple_plugin_bar" padding="0,10,0,10" height="auto"/>			
-			<ButtonBox name="main_menu_button" margin="0,0,0,15" height="24"  width="24" halign="center" mousechild="false" tooltiptext="主菜单"
-				normalcolor="gray" hotcolor="icongray" pushedcolor="dark2color" borderround="2,2" >
+			<VBox name="main_plugin_bar" padding="0,15,0,10" />
+			<!-- <VBox name="simple_plugin_bar" padding="0,10,0,10" height="auto"/>			 -->
+			<ButtonBox name="main_menu_button" margin="0,0,0,15" height="24"  width="24" halign="center" mousechild="false" tooltiptext="更多"
+				 hotcolor="icongray" pushedcolor="dark2color" borderround="2,2" >
 				<VBox padding="4,3,4,3" mousechild="false">
 					<Control />
-					<Control height="1" bkcolor="bk_gray1" />
+					<Control height="2" bkcolor="bk_gray1" />
 					<Control />
-					<Control height="1" bkcolor="bk_gray1" />
+					<Control height="2" bkcolor="bk_gray1" />
 					<Control />
-					<Control height="1" bkcolor="bk_gray1" />
+					<Control height="2" bkcolor="bk_gray1" />
 					<Control />
 				</VBox>				
 			</ButtonBox>

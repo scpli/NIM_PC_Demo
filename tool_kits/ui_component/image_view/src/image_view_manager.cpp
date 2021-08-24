@@ -78,51 +78,88 @@ void ImageViewManager::ResetImageViewWndPoint(void)
 
 bool ImageViewManager::SetImageViewList(ImageViewInfoList info_list, std::wstring message_id)
 {
-	if (image_view_window_)
+	if (message_id == message_id_)
 	{
-		if (message_id == message_id_)
+		int list_size = (int)image_view_info_list_.size();
+		for (auto new_item = info_list.cbegin(); new_item != info_list.cend(); new_item++)
 		{
-			image_view_info_list_ = info_list;
+			bool is_add = false;
+			if (0 == list_size)
+			{
+				image_view_info_list_.push_back(*new_item);
+				continue;
+			}
+			for (int j = list_size - 1; j >= 0; --j)
+			{
+				ImageViewInfo list_item = image_view_info_list_.at(j);
+				if (list_item.id_ == new_item->id_)
+				{
+					is_add = true;
+					break;
+				}
+			}
+			if (is_add)
+			{
+				continue;
+			}
+			for (int k = list_size - 1; k >= 0; --k)
+			{
+				ImageViewInfo list_item = image_view_info_list_.at(k);
+				if (list_item.timetag_ < new_item->timetag_)
+				{
+					image_view_info_list_.insert(image_view_info_list_.cbegin() + (k + 1), *new_item);
+					is_add = true;
+					break;
+				}
+			}
+			if (!is_add)
+			{
+				image_view_info_list_.insert(image_view_info_list_.cbegin(), *new_item);
+			}
+		}
+		if (image_view_window_)
+		{
 			image_view_window_->CenterWindow();
 			image_view_window_->CheckNextOrPreImageBtnStatus();
-			image_view_window_->SetNextOrPreImageBtnVisible(info_list.size() > 1);
-			return true;
+			image_view_window_->SetNextOrPreImageBtnVisible(list_size > 1);
 		}
 	}
-	return false;
+	return true;
 }
 
 bool ImageViewManager::ShowNextImageView(bool next)
 {
-	for (int i=0; i<(int)image_view_info_list_.size(); ++i)
+	int list_size = (int)image_view_info_list_.size();
+	for (int i=0; i < list_size; ++i)
 	{
 		ImageViewInfo info = image_view_info_list_.at(i);
 		if (info.id_ == message_id_)
 		{
+			int j = i;
 			if (next)
 			{
-				i++;
+				j++;
 			} 
 			else
 			{
-				i--;
+				j--;
 			}
 
-			if (i >= 0 && i < (int)image_view_info_list_.size())
+			if (j >= 0 && j < list_size)
 			{
-				info = image_view_info_list_.at(i);
+				info = image_view_info_list_.at(j);
 
-				if( nbase::FilePathIsExist(info.path_, false) || info.url_.empty() )
+				if(nbase::FilePathIsExist(info.path_, false))
 				{
 					StartViewPic(info.path_, info.id_, false);
 				}
-				else
-				{
+				//else
+				//{
 					//std::string path, url;
 					//nbase::UTF16ToUTF8(info.path_, path);
 					//nbase::UTF16ToUTF8(info.url_, url);
 					//ViewImage(url, path, info.id_, false);
-				}
+				//}
 
 				return true;
 			}
@@ -140,14 +177,17 @@ bool ImageViewManager::IsExistNextImage(bool next)
 		ImageViewInfo info = image_view_info_list_.at(i);
 		if (info.id_ == message_id_)
 		{
+			int j = i;
 			if (next)
-				i++;
+			{
+				j++;
+			}				
 			else
-				i--;
-
-			if (i >= 0 && i < (int)image_view_info_list_.size())
+			{
+				j--;
+			}
+			if (j >= 0 && j < (int)image_view_info_list_.size())
 				return true;
-
 		}
 	}
 	return false;

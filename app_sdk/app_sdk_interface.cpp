@@ -19,7 +19,11 @@ namespace app_sdk
 		{ "NRTCStreamENCKey", std::make_tuple("nrtc_stream_enc_key", NimServerConfType::NimServerConfType_String) },
 		{ "kNIMChatRoomAddress", std::make_tuple("chatroomDemoListUrl", NimServerConfType::NimServerConfType_String) }
 	};
-const std::string AppSDKInterface::kAppKey = "45c6af3c98409b18a84451215d0bdd6e";	
+
+//const std::string AppSDKInterface::kAppKey = "dd7cf5454bf232eeac010b94890454ab"; // test
+
+const std::string AppSDKInterface::kAppKey = "02887e0c58d4f125188f1f149e8a904e";	// 正式
+
 const std::string AppSDKInterface::kAppHost = "http://app.netease.im";
 
 std::map<std::string, std::string> AppSDKInterface::config_map_;
@@ -101,7 +105,8 @@ std::string AppSDKInterface::GetAppKey()
 bool AppSDKInterface::IsNimDemoAppKey(const std::string& appkey)
 {
 	static const std::string kNimTestAppKey = "fe416640c8e8a72734219e1847ad2547";
-	if (appkey.compare(kNimTestAppKey) == 0 || appkey.compare(kAppKey) == 0)
+	//if (appkey.compare(kNimTestAppKey) == 0 || appkey.compare(kAppKey) == 0)
+	if (appkey.compare(kNimTestAppKey) == 0)
 		return true;
 	return false;
 }
@@ -164,6 +169,118 @@ void AppSDKInterface::InvokeRegisterAccount(const std::string &username, const s
 			cb((rsp->GetResponseCode() == nim::kNIMResSuccess ? rsp->GetProtocolReplyCode() : rsp->GetResponseCode()), rsp->err_msg_);
 		}
 	}));
+}
+void AppSDKInterface::InvokeGetAccidByUsername(const std::string &username, const OnSearchAccidCallback& cb)
+{
+	QLOG_APP(L"InvokeAccidByUsername username={0} ") << username ;
+	//在构造函数中传入请求参数
+	auto&& req = app_sdk::CreateHttpRequest<app_sdk_pro::GetAccidByUsernameReq>(username);
+
+	SDKManager::GetInstance()->Invoke_Request<app_sdk_pro::GetAccidByUsernameReq, app_sdk_pro::GetAccidByUsernameRsp>(req,
+		ToWeakCallback([cb](const app_sdk_pro::GetAccidByUsernameReq& req, const app_sdk_pro::GetAccidByUsernameRsp& rsp) {
+		if (cb != nullptr)
+		{
+
+			cb((rsp->GetResponseCode() == nim::kNIMResSuccess ? rsp->GetProtocolReplyCode() : rsp->GetResponseCode()),
+				rsp->accid_,
+				rsp->err_msg_);
+		}
+	}));
+}
+void AppSDKInterface::InvokeGetMsgShotCutByAccid(const std::string &accid, const OnGetMsgShortCutCallback& cb)
+{
+	QLOG_APP(L"InvokeGetMsgShotCutByAccid accid={0} ") << accid;
+	//在构造函数中传入请求参数
+	auto&& req = app_sdk::CreateHttpRequest<app_sdk_pro::GetMsgShortcutRequestReq>(accid);
+
+	SDKManager::GetInstance()->Invoke_Request<app_sdk_pro::GetMsgShortcutRequestReq, app_sdk_pro::GetMsgShortcutRequestRsp>(req,
+		ToWeakCallback([cb](const app_sdk_pro::GetMsgShortcutRequestReq& req, const app_sdk_pro::GetMsgShortcutRequestRsp& rsp) {
+		if (cb != nullptr)
+		{
+
+			cb((rsp->GetResponseCode() == nim::kNIMResSuccess ? rsp->GetProtocolReplyCode() : rsp->GetResponseCode()), rsp->msgShortcutList_, rsp->err_msg_);
+		}
+	}));
+}
+void AppSDKInterface::InvokeDelMsgShotCutByAccid(const std::string &accid, const std::wstring shortcutId, const OnDelMsgShortCutCallback& cb)
+{
+	QLOG_APP(L"InvokeDelMsgShotCutByAccid accid={0} shortcutId={1}") << accid << shortcutId;
+	 
+	auto&& req = app_sdk::CreateHttpRequest<app_sdk_pro::DelMsgShortcutRequestReq>(accid, shortcutId);
+
+	SDKManager::GetInstance()->Invoke_Request<app_sdk_pro::DelMsgShortcutRequestReq, app_sdk_pro::DelMsgShortcutRequestRsp>(req,
+		ToWeakCallback([cb](const app_sdk_pro::DelMsgShortcutRequestReq& req, const app_sdk_pro::DelMsgShortcutRequestRsp& rsp) {
+		if (cb != nullptr)
+		{
+
+			cb((rsp->GetResponseCode() == nim::kNIMResSuccess ? rsp->GetProtocolReplyCode() : rsp->GetResponseCode()), rsp->err_msg_);
+		}
+	}));
+}
+void AppSDKInterface::InvokeAddMsgShotCut(const std::string &accid,
+										const std::string &category,
+										const std::string &type,
+										const std::string &keyWorks,
+										const std::string &content,
+										const std::string &subCategory, const OnAddMsgShortCutCallback& cb)
+{
+	QLOG_APP(L"OnAddMsgShortCutCallback ------ accid={0} ") << accid;
+	//在构造函数中传入请求参数
+	auto&& req = app_sdk::CreateHttpRequest<app_sdk_pro::AddMsgShortcutRequestReq>(accid, category, type, keyWorks, content, subCategory);
+
+	SDKManager::GetInstance()->Invoke_Request<app_sdk_pro::AddMsgShortcutRequestReq, app_sdk_pro::AddMsgShortcutRequestRsp>(req,
+		ToWeakCallback([cb](const app_sdk_pro::AddMsgShortcutRequestReq& req, const app_sdk_pro::AddMsgShortcutRequestRsp& rsp) {
+		if (cb != nullptr)
+		{
+
+			cb((rsp->GetResponseCode() == nim::kNIMResSuccess ? rsp->GetProtocolReplyCode() : rsp->GetResponseCode()), rsp->msgShortcutList_, rsp->err_msg_);
+		}
+	}));
+}
+void AppSDKInterface::InvokeSubCategoryReq(const std::string &accid, const std::string &category, const OnGetSubCategoryCallback& cb)
+{
+	auto&& req = app_sdk::CreateHttpRequest<app_sdk_pro::GetSubCategoryReq>(accid, category);
+
+	SDKManager::GetInstance()->Invoke_Request<app_sdk_pro::GetSubCategoryReq, app_sdk_pro::GetSubCategoryRsp>(req,
+		ToWeakCallback([cb](const app_sdk_pro::GetSubCategoryReq& req, const app_sdk_pro::GetSubCategoryRsp& rsp) {
+		if (cb != nullptr)
+		{
+			cb((rsp->GetResponseCode() == nim::kNIMResSuccess ? rsp->GetProtocolReplyCode() : rsp->GetResponseCode()), rsp->resList_, rsp->err_msg_);
+		}
+	}));
+}
+
+void AppSDKInterface::InvokeAddSubCategory(const std::string &accid, const std::string &category, const std::string &name, const OnAddSubCategoryCallback& cb)
+{
+	auto&& req = app_sdk::CreateHttpRequest<app_sdk_pro::AddSubCategoryRequestReq>(accid, category, name);
+
+	SDKManager::GetInstance()->Invoke_Request<app_sdk_pro::AddSubCategoryRequestReq, app_sdk_pro::AddSubCategoryRequestRsp>(req,
+		ToWeakCallback([cb](const app_sdk_pro::AddSubCategoryRequestReq& req, const app_sdk_pro::AddSubCategoryRequestRsp& rsp) {
+		if (cb != nullptr)
+		{
+			cb((rsp->GetResponseCode() == nim::kNIMResSuccess ? rsp->GetProtocolReplyCode() : rsp->GetResponseCode()), rsp->resList_, rsp->err_msg_);
+		}
+	}));
+}
+
+void AppSDKInterface::InvokeLoginAccount(const std::string &username, const std::string &password, const OnLoginAccountCallback& cb)
+{
+	QLOG_APP(L"login pos InvokeLoginAccount username={0}, password={1} ") << username << password;
+	//在构造函数中传入请求参数
+	auto&& req = app_sdk::CreateHttpRequest<app_sdk_pro::LoginAccountReq>(username, password);
+
+	SDKManager::GetInstance()->Invoke_Request<app_sdk_pro::LoginAccountReq, app_sdk_pro::LoginAccountRsp>(req,
+		ToWeakCallback([cb](const app_sdk_pro::LoginAccountReq& req, const app_sdk_pro::LoginAccountRsp& rsp) {
+		if (cb != nullptr)
+		{
+
+			cb((rsp->GetResponseCode() == nim::kNIMResSuccess ? rsp->GetProtocolReplyCode() : rsp->GetResponseCode()),
+				rsp->accid_,
+				rsp->token_,
+				rsp->err_msg_);
+		}
+	}));
+	
 }
 void AppSDKInterface::InvokeGetChatroomList(const OnGetChatroomListCallback& cb)
 {

@@ -12,15 +12,15 @@ void MainFormMenu::OnPopupMainMenu(POINT point)
 	//创建菜单窗口
 	CMenuWnd* pMenu = new CMenuWnd(NULL);
 	std::wstring main_menu_xml_path = L"main_menu.xml";
-	if (ui::GlobalManager::GetLanguageSetting().m_enumType == ui::LanguageType::Simplified_Chinese)
+	/*if (ui::GlobalManager::GetLanguageSetting().m_enumType == ui::LanguageType::Simplified_Chinese)
 		main_menu_xml_path = L"main_menu.xml";
 	if (ui::GlobalManager::GetLanguageSetting().m_enumType == ui::LanguageType::American_English)
-		main_menu_xml_path = L"main_menu_en.xml";
+		main_menu_xml_path = L"main_menu_en.xml";*/
 	STRINGorID xml(main_menu_xml_path.c_str());
 	pMenu->Init(xml, _T("xml"), point);
 	//注册回调
-	CMenuElementUI* look_log = (CMenuElementUI*)pMenu->FindControl(L"look_log");
-	look_log->AttachSelect(nbase::Bind(&MainFormMenu::LookLogMenuItemClick, this, std::placeholders::_1));
+	/*CMenuElementUI* look_log = (CMenuElementUI*)pMenu->FindControl(L"look_log");
+	look_log->AttachSelect(nbase::Bind(&MainFormMenu::LookLogMenuItemClick, this, std::placeholders::_1));*/
 
 	CMenuElementUI* mobile_phone = (CMenuElementUI*)pMenu->FindControl(L"file_helper");
 	mobile_phone->AttachSelect(nbase::Bind(&MainFormMenu::MobilePhoneMenuItemClick, this, std::placeholders::_1));

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Window>
     <VListBox class="menu">
-        <MenuElement class="MenuElement" name="look_log" width="180">
+        <MenuElement class="MenuElement" name="look_log" width="180" visible="false">
             <Button margin="2,0,0,0" normalimage="icon_watch_out.png" valign="center" mouse="false" />
             <Label class="menu_text" textid="STRID_MAINWINDOW_MENU_LOOK_OVER_LOG" margin="27,0,0,0"/>
         </MenuElement>
@@ -30,12 +30,12 @@
             <Label class="menu_text" textid="STRID_MAINWINDOW_MENU_CLEAR_CHAT_RECORD" margin="27,0,0,0"/>
         </MenuElement>
 		
-        <MenuElement class="MenuElement" name="clear_chat_record_p2p" width="180" visible="true">
+        <MenuElement class="MenuElement" name="clear_chat_record_p2p" width="180" visible="false">
             <Button normalimage="icon_recycle_normal.png" valign="center" mouse="false" />
             <Label class="menu_text" textid="STRID_MAINWINDOW_MENU_CLEAR_P2P" margin="27,0,0,0"/>
         </MenuElement>
 		
-        <MenuElement class="MenuElement" name="clear_chat_record_team" width="180" >
+        <MenuElement class="MenuElement" name="clear_chat_record_team" width="180" visible="false" >
             <Button normalimage="icon_recycle_normal.png" valign="center" mouse="false" />
             <Label class="menu_text" textid="STRID_MAINWINDOW_MENU_CLEAR_TEAM" margin="27,0,0,0"/>
         </MenuElement>
@@ -45,12 +45,12 @@
             <Label class="menu_text" textid="STRID_MAINWINDOW_MENU_AUDIO_VIDEO_SETTING" margin="27,0,0,0"/>
         </MenuElement>
 		
-        <MenuElement class="MenuElement" name="rts_replay" width="180">
+        <MenuElement class="MenuElement" name="rts_replay" width="180" visible="false">
             <Button margin="2,0,0,0" normalimage="icon_setting_normal.png" valign="center" mouse="false" />
             <Label class="menu_text" textid="STRID_MAINWINDOW_MENU_RTS_REPLAY" margin="27,0,0,0"/>
         </MenuElement>
 
-		<MenuElement class="MenuElement" name="adapt_dpi" width="180" tooltiptextid="STRID_MAINWINDOW_MENU_ADAPT_DPI_TIP">
+		<MenuElement class="MenuElement" name="adapt_dpi" width="180" tooltiptextid="STRID_MAINWINDOW_MENU_ADAPT_DPI_TIP" visible="false">
             <Event type="mouseenter" receiver=".\check_dpi" applyattribute="state=&quot;hot&quot;"/>
             <Event type="mouseleave" receiver=".\check_dpi" applyattribute="state=&quot;normal&quot;"/>
             

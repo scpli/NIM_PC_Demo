@@ -84,6 +84,58 @@ public:
 	void InvokeRegisterAccount(const std::string &username, const std::string &password, const std::string &nickname, const OnRegisterAccountCallback& cb);
 
 	/**
+	* 用户登录 appServer
+	* @param[in] username 用户名
+	* @param[in] password 用户密码
+	* @param[in] cb 注册完毕的回调通知函数
+	* @return void	无返回值
+	*/
+	void InvokeLoginAccount(const std::string &username, const std::string &password, const OnLoginAccountCallback& cb);
+
+	/**
+	* 搜索accid by username  from appServer
+	* @param[in] username 用户名
+	* @param[in] cb 注册完毕的回调通知函数
+	* @return void	无返回值
+	*/
+	void InvokeGetAccidByUsername(const std::string &username, const OnSearchAccidCallback& cb);
+
+	/**
+	* 获取快捷语消息列表  from appServer
+	* @param[in] accid 用户名
+	* @param[in] cb 注册完毕的回调通知函数
+	* @return void	无返回值
+	*/
+	void InvokeGetMsgShotCutByAccid(const std::string &accid, const OnGetMsgShortCutCallback& cb);
+
+	void InvokeDelMsgShotCutByAccid(const std::string &accid, const std::wstring shortcutId, const OnDelMsgShortCutCallback& cb);
+
+	/**
+	* 获取快捷语消息列表  from appServer
+	* @param[in] accid 用户名
+	* @param[in] cb 注册完毕的回调通知函数
+	* @return void	无返回值
+	*/ 
+	void InvokeAddMsgShotCut(const std::string &accid, 
+							 const std::string &category,
+							 const std::string &type,
+							 const std::string &keyWorks,
+							 const std::string &content,
+							 const std::string &subCategory,
+							 const OnAddMsgShortCutCallback& cb);
+
+	/**
+	* 获取快捷语 二级分类 消息列表  from appServer
+	* @param[in] accid 用户名
+	* @param[in] cb 注册完毕的回调通知函数
+	* @return void	无返回值
+	*/
+	void InvokeSubCategoryReq(const std::string &accid, const std::string &category, const OnGetSubCategoryCallback& cb);
+
+	void InvokeAddSubCategory(const std::string &accid, const std::string &category, const std::string &name, const OnAddSubCategoryCallback& cb);
+
+
+	/**
 	 * 获取聊天室列表
 	 * @param[in] cb 回调通知函数
 	 * @return void	无返回值

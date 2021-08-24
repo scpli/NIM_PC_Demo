@@ -13,6 +13,11 @@
 	            <Label name="label_unread_sysmsg" halign="center" normaltextcolor="white"/>
 	        </Box>
 	    </ButtonBox>
+		<Control class="splitline_hor_level1" name="split_line"/>
+		<ButtonBox name="btn_search_events" height="60" cursortype="hand" mousechild="false" normalcolor="bk_wnd_lightcolor" hotcolor="bk_listitem_hovered" pushedcolor="bk_listitem_selected">
+	        <Control bkimage="../main/search_add_team.png" margin="10,0,0,0" valign="center" width="auto" height="auto"/>
+	        <Label margin="58,0,0,0" valign="center" font="2" textid="STRID_MAINWINDOW_MSG_SEARCH"/>
+	    </ButtonBox>
 	    <Control class="splitline_hor_level1" name="split_line"/>
 	</VBox>
 </Window>

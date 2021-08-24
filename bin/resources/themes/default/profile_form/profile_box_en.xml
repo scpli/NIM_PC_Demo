@@ -92,7 +92,7 @@
 					<Control width="stretch"/>
 					<CheckBox class="switch" name="multi_push_switch" selected="true"/>
 				</HBox>
-				<HBox width="stretch" height="auto">
+				<HBox width="stretch" height="auto" visible="false">
 					<Label textid="STRID_PROFILE_FORM_WEBRTC_SET" font="2" valign="center"  />
 					<Control margin="5,0,0,0" bkimage="../profile_form/infor.png" tooltiptextid="STRID_PROFILE_FORM_WEBRTC_TIP" valign="center" width="auto" height="auto"/>
 					<Control width="stretch"/>

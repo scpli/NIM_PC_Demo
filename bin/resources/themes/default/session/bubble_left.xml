@@ -7,8 +7,7 @@
                 <Box name="header_panel" width="auto" height="auto" >
                     <Button name="msg_header_button" width="38" height="38" borderround="38,38,38,38" margin="1,1,0,0" cursortype="hand" forenormalimage="../session/header.png"/>
                     <Button class="icon_headimage_mask_40x40" name="head_image_mask" mouse="false"/>
-                </Box>
-                
+                </Box>              
                 <VBox height="auto">
                     <Label name="sender_name" margin="0,0,0,5" font="2" normaltextcolor="lightcolor"/>
                     <HBox height="auto" margin="0,3,0,0">
@@ -27,6 +26,7 @@
                         </Box>
                     </HBox>
                 </VBox>
+              <Button name="show_context" valign="center" halign="right" cursortype="hand" font="24" normaltextcolor="link_green" textid="STRID_SESSION_SHOW_CONTEXT" visible="false"/>
             </HBox>
         </VBox>
     </ListContainerElement>

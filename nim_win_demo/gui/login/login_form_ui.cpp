@@ -34,10 +34,10 @@ std::wstring LoginForm::GetSkinFolder()
 
 std::wstring LoginForm::GetSkinFile()
 {
-	if(ui::GlobalManager::GetLanguageSetting().m_enumType == ui::LanguageType::Simplified_Chinese)
-		return   L"login.xml";
+	/*if(ui::GlobalManager::GetLanguageSetting().m_enumType == ui::LanguageType::Simplified_Chinese)
+		return   L"login.xml"; 
 	else if(ui::GlobalManager::GetLanguageSetting().m_enumType == ui::LanguageType::American_English)
-		return   L"login_en.xml";
+		return   L"login_en.xml";*/
 	return   L"login.xml";
 }
 
@@ -59,8 +59,8 @@ UINT LoginForm::GetClassStyle() const
 void LoginForm::InitWindow()
 {
     sdk_init_autounreg_cb_ = nim_ui::RunTimeDataManager::GetInstance()->RegSDKInited([this]() {
-        use_private_settings_->SetEnabled(false);
-        private_settings_url_->SetEnabled(false);
+        //use_private_settings_->SetEnabled(false);
+        //private_settings_url_->SetEnabled(false);
     });
     SetIcon(IDI_ICON);
     m_pRoot->AttachBubbledEvent(ui::kEventAll, nbase::Bind(&LoginForm::Notify, this, std::placeholders::_1));
@@ -81,11 +81,12 @@ void LoginForm::InitWindow()
 
     btn_login_ = (Button*)FindControl(L"btn_login");
     btn_register_ = (Button*)FindControl(L"btn_register");
+    register_label_ = FindControl(L"register_label");
     btn_cancel_ = (Button*)FindControl(L"btn_cancel");
     remember_pwd_ckb_ = (CheckBox *)FindControl(L"chkbox_remember_pwd");
     remember_user_ckb_ = (CheckBox *)FindControl(L"chkbox_remember_username");   
-    use_private_settings_ = dynamic_cast<ui::CheckBox*>(FindControl(L"chkbox_use_private_enable"));
-    chkbox_private_use_proxy_enable_ = dynamic_cast<ui::CheckBox*>(FindControl(L"chkbox_private_use_proxy_enable"));
+    /*use_private_settings_ = dynamic_cast<ui::CheckBox*>(FindControl(L"chkbox_use_private_enable"));
+    //chkbox_private_use_proxy_enable_ = dynamic_cast<ui::CheckBox*>(FindControl(L"chkbox_private_use_proxy_enable"));
     private_settings_url_ = dynamic_cast<ui::RichEdit*>(FindControl(L"private_settings_url"));
     use_private_settings_->AttachSelect([this](ui::EventArgs* param) {
         FindControl(L"private_settings_container")->SetVisible(true);
@@ -108,7 +109,7 @@ void LoginForm::InitWindow()
         FindControl(L"anonymous_chatroom")->SetVisible(true);
         FindControl(L"proxy_setting")->SetVisible(true);
         return true;
-    });
+    });*/
     //RichEdit的SetText操作放在最后，会触发TextChange事件
     std::wstring account = QCommand::Get(kCmdAccount);
     user_name_edit_->SetText(account);
@@ -138,10 +139,11 @@ void LoginForm::InitWindow()
         SetTaskbarTitle(multilan->GetStringViaID(L"STRID_LOGIN_FORM_REGISTER"));
         FindControl(L"enter_panel")->SetBkImage(L"user_password_nickname.png");
         FindControl(L"login_cache_conf")->SetVisible(false);
-        SetAnonymousChatroomVisible(false);
+        //SetAnonymousChatroomVisible(false);
         msg->pSender->GetWindow()->FindControl(L"nick_name_panel")->SetVisible();
         msg->pSender->GetWindow()->FindControl(L"enter_login")->SetVisible();
         btn_register_->SetVisible();
+        register_label_->SetVisible(false);
         btn_login_->SetVisible(false);
         user_name_edit_->SetText(L"");
         user_name_edit_->SetPromptText(multilan->GetStringViaID(L"STRID_LOGIN_FORM_TIP_ACCOUNT_RESTRICT"));
@@ -152,13 +154,13 @@ void LoginForm::InitWindow()
         nick_name_edit_->SetText(L"");
         nick_name_edit_->SetPromptText(multilan->GetStringViaID(L"STRID_LOGIN_FORM_TIP_NICKNAME_RESTRICT"));
         msg->pSender->GetWindow()->FindControl(L"register_account")->SetVisible(false);
-        msg->pSender->GetWindow()->FindControl(L"private_settings")->SetVisible(false);
+        //msg->pSender->GetWindow()->FindControl(L"private_settings")->SetVisible(false);
         return true; });
 
     ((ui::Button*)FindControl(L"enter_login"))->AttachClick([this](ui::EventArgs* msg) {
         return OnSwitchToLoginPage();
         return true; });
-    std::string private_settings_url;
+   /* std::string private_settings_url;
     if (ConfigHelper::GetInstance()->UsePrivateSettings(private_settings_url))
     {
         Post2UI(ToWeakCallback([this, private_settings_url]() {
@@ -171,7 +173,7 @@ void LoginForm::InitWindow()
         Post2UI(ToWeakCallback([this]() {
             use_private_settings_->Selected(false, true);
         }));
-    }
+    }*/
     this->RegLoginManagerCallback();
 
     InitLoginData();
@@ -294,7 +296,7 @@ bool LoginForm::OnClicked(ui::EventArgs* msg)
         btn_cancel_->SetEnabled(false);
         nim_ui::LoginManager::GetInstance()->CancelLogin();
     }
-    else if (name == L"proxy_setting")
+    /*else if (name == L"proxy_setting")
     {
 		RECT rect = msg->pSender->GetPos();
 		CPoint point;
@@ -340,13 +342,13 @@ bool LoginForm::OnClicked(ui::EventArgs* msg)
             auto form = nim_ui::WindowsManager::GetInstance()->SingletonShow<nim_chatroom::ChatroomFrontpage>(nim_chatroom::ChatroomFrontpage::kClassName);
             form->SetAnonymity(true);
         }
-    }
+    }*/
     return true;
 }
 
 void LoginForm::SetAnonymousChatroomVisible(bool visible)
 {
-    FindControl(L"anonymous_chatroom")->SetVisible(visible);
+    //FindControl(L"anonymous_chatroom")->SetVisible(visible);
 }
 void LoginForm::SwitchToLoginPage()
 {

@@ -58,6 +58,161 @@ namespace app_sdk
 		private:
 			mutable std::string app_url_;
 		};
+		// get accid by username 2020-09
+		class GetAccidByUsernameRequest : public RequestBase
+		{
+		public:
+			GetAccidByUsernameRequest(std::string username);
+		protected:
+			virtual std::string OnGetHost() const override;
+			virtual std::string OnGetAPI() const override;
+			virtual bool UsePostMethod() const override;
+			virtual void OnGetRequestHead(std::map<std::string, std::string>& heads) const override;
+			virtual void OnGetRequestContent(std::string& content) const override;
+		public:
+			std::string username_;
+		};
+		class GetAccidByUsernameResponse : public ResponseBase
+		{
+		protected:
+			virtual void OnParse(const std::string& response) override;
+		public:
+			std::string err_msg_;
+			std::string accid_;
+			//std::list<std::string> accid_;
+		};
+		// 获取快捷语 2021-04
+		class GetMsgShortcutRequest : public RequestBase
+		{
+		public:
+			GetMsgShortcutRequest();
+			GetMsgShortcutRequest(std::string accid);
+			std::string accid_;
+		protected:
+			virtual std::string OnGetHost() const override;
+			virtual std::string OnGetAPI() const override;
+			virtual bool UsePostMethod() const override;
+			virtual void OnGetRequestHead(std::map<std::string, std::string>& heads) const override;
+			virtual void OnGetRequestContent(std::string& content) const override;
+		};
+		class GetMsgShortcutResponse : public ResponseBase
+		{
+		protected:
+			virtual void OnParse(const std::string& response) override;
+		public:
+			//std::list<Json::Value> msg_shortcut_list_;
+			Json::Value msgShortcutList_;
+			std::string err_msg_;
+		};
+		class DelMsgShortcutRequest : public RequestBase
+		{
+		public:
+			DelMsgShortcutRequest(std::string accid, std::wstring shortCutId);
+			std::wstring shortCutId_;
+			std::string accid_;
+		protected: 
+			virtual std::string OnGetHost() const override;
+			virtual std::string OnGetAPI() const override;
+			virtual bool UsePostMethod() const override;
+			virtual void OnGetRequestHead(std::map<std::string, std::string>& heads) const override;
+			virtual void OnGetRequestContent(std::string& content) const override;
+		};
+		class DelMsgShortcutResponse : public ResponseBase
+		{
+		protected:
+			virtual void OnParse(const std::string& response) override;
+		public:  
+			std::string err_msg_;
+		};
+		class AddMsgShortcutRequest : public GetMsgShortcutRequest
+		{
+		public:
+			AddMsgShortcutRequest();
+			AddMsgShortcutRequest(std::string accid, std::string category, std::string type, 
+								  std::string keyWorks, std::string content, std::string subCategory);
+			std::string accid_;
+			std::string category_;
+			std::string type_;
+			std::string keyWorks_;
+			std::string content_;
+			std::string subCategory_;
+		protected: 
+			virtual bool UsePostMethod() const override; 
+			virtual void OnGetRequestContent(std::string& content) const override;
+		};
+		class AddMsgShortcutResponse : public ResponseBase
+		{
+		protected:
+			virtual void OnParse(const std::string& response) override;
+		public:
+			//std::list<Json::Value> msg_shortcut_list_;
+			Json::Value msgShortcutList_;
+			std::string err_msg_;
+		};
+		class SubCategoryRequest : public RequestBase
+		{
+		public: 
+			SubCategoryRequest(std::string accid, std::string categoryId);
+			std::string accid_;
+			std::string categoryId_;
+		protected: 
+			virtual std::string OnGetHost() const override;
+			virtual std::string OnGetAPI() const override;
+			virtual bool UsePostMethod() const override;
+			virtual void OnGetRequestHead(std::map<std::string, std::string>& heads) const override;
+			virtual void OnGetRequestContent(std::string& content) const override;
+		};
+		class SubCategoryResponse : public ResponseBase
+		{
+		protected:
+			virtual void OnParse(const std::string& response) override;
+		public: 
+			Json::Value resList_;
+			std::string err_msg_;
+		};
+		class AddSubCategoryRequest : public AddMsgShortcutRequest
+		{
+		public:
+			AddSubCategoryRequest(std::string accid, std::string category, std::string name);
+			std::string accid_;
+			std::string category_;
+			std::string name_;
+		protected:
+			virtual std::string OnGetAPI() const override;
+			virtual void OnGetRequestContent(std::string& content) const override;
+		};
+		class AddSubCategoryResponse : public ResponseBase
+		{
+		protected:
+			virtual void OnParse(const std::string& response) override;
+		public:
+			Json::Value resList_;
+			std::string err_msg_;
+		};
+		// 账号登录 appServe 2020-09 
+		class LoginAccountRequest : public RequestBase
+		{
+		public:
+			LoginAccountRequest(std::string username, std::string password);
+		protected:
+			virtual std::string OnGetHost() const override;
+			virtual std::string OnGetAPI() const override;
+			virtual void OnGetRequestHead(std::map<std::string, std::string>& heads) const override;
+			virtual void OnGetRequestContent(std::string& content) const override;
+		public:
+			std::string username_;
+			std::string password_;
+		};
+		class LoginAccountResponse : public ResponseBase
+		{
+		protected:
+			virtual void OnParse(const std::string& response) override;
+		public:
+			std::string err_msg_;
+			std::string accid_;
+			std::string token_;
+		};
+
 		//注册账号请求/应答
 		class RegisterAccountRequest : public RequestBase
 		{		
@@ -119,6 +274,27 @@ namespace app_sdk
 	public:
 		/****************************对外暴露定义*****************************/
 
+		// 账号登录 appServe 2020-09
+		using LoginAccountReq = TSharedHttpRequest< LoginAccountRequest>;
+		using LoginAccountRsp = TSharedHttpResponse<LoginAccountResponse>;
+		//搜索账号请求/应答
+		using GetAccidByUsernameReq = TSharedHttpRequest<GetAccidByUsernameRequest>;
+		using GetAccidByUsernameRsp = TSharedHttpResponse<GetAccidByUsernameResponse>;
+		//快捷语 2021
+		using GetMsgShortcutRequestReq = TSharedHttpRequest<GetMsgShortcutRequest>;
+		using GetMsgShortcutRequestRsp = TSharedHttpResponse<GetMsgShortcutResponse>;
+
+		using AddMsgShortcutRequestReq = TSharedHttpRequest<AddMsgShortcutRequest>;
+		using AddMsgShortcutRequestRsp = TSharedHttpResponse<AddMsgShortcutResponse>;
+
+		using DelMsgShortcutRequestReq = TSharedHttpRequest<DelMsgShortcutRequest>;
+		using DelMsgShortcutRequestRsp = TSharedHttpResponse<DelMsgShortcutResponse>;
+
+		using GetSubCategoryReq = TSharedHttpRequest<SubCategoryRequest>;
+		using GetSubCategoryRsp = TSharedHttpResponse<SubCategoryResponse>;
+
+		using AddSubCategoryRequestReq = TSharedHttpRequest<AddSubCategoryRequest>;
+		using AddSubCategoryRequestRsp = TSharedHttpResponse<AddSubCategoryResponse>;
 		//注册账号请求/应答
 		using RegisterAccountReq = TSharedHttpRequest<RegisterAccountRequest>;
 		using RegisterAccountRsp = TSharedHttpResponse<RegisterAccountResponse>;

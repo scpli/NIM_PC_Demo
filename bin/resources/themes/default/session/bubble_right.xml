@@ -4,6 +4,7 @@
         <VBox height="auto">
             <Label name="msg_time" margin="0,0,0,10" halign="center" normaltextcolor="lightcolor" textid="STRID_SESSION_MSG_TIME"/>
             <HBox height="auto">
+                <Button name="show_context" valign="center" halign="left"  cursortype="hand" font="24" normaltextcolor="link_green" textid="STRID_SESSION_SHOW_CONTEXT" visible="false"/>
                 <VBox height="auto">
                     <Label name="sender_name" margin="0,0,0,5" halign="right" font="2" normaltextcolor="lightcolor"/>
                     <HBox height="auto" margin="0,3,0,0">

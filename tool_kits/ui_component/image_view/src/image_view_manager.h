@@ -14,6 +14,7 @@ public:
 		std::wstring id_;
 		std::wstring url_;
 		std::wstring path_;
+		int64_t	timetag_;
 	};
 	typedef std::vector<ImageViewInfo> ImageViewInfoList;
 	typedef std::function<void()> ImageViewSetNoTopMostCB;

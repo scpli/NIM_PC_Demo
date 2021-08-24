@@ -135,6 +135,7 @@ private:
 	ui::RichEdit*	password_edit_;
 	ui::Control*	login_ing_tip_;
 	ui::Label*		login_error_tip_;
+	ui::Control*	register_label_;  
 	ui::Label*		register_ok_toast_;
 	ui::Button*		btn_login_;
 	ui::Button*		btn_register_;
@@ -142,7 +143,7 @@ private:
 	ui::CheckBox*	remember_pwd_ckb_ = nullptr;
 	ui::CheckBox*	remember_user_ckb_ = nullptr;
 	ui::CheckBox* use_private_settings_;
-	ui::CheckBox* chkbox_private_use_proxy_enable_;
+	//ui::CheckBox* chkbox_private_use_proxy_enable_; 
 	ui::RichEdit* private_settings_url_;
 
 	UnregisterCallback sdk_init_autounreg_cb_;
