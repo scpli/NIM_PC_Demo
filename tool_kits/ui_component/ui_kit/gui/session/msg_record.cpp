@@ -211,7 +211,8 @@ void MsgRecordForm::RefreshRecord(std::string id, nim::NIMSessionType type)
 	farst_msg_time_ = 0;
 	last_server_id_ = 0;
 
-	has_more_ = true;
+	front_has_more_ = true;
+	back_has_more_ = true;
 	is_loading_ = false;
 
 	std::wstring name;
@@ -235,32 +236,62 @@ void MsgRecordForm::RefreshRecord(std::string id, nim::NIMSessionType type)
 			team_member_info_list_.clear();
 			for (const auto &info : props)
 				team_member_info_list_[info.GetAccountID()] = info;
-			ShowMore(false);
+			ShowMore(false, false);
 		});
 		nim::Team::QueryTeamMembersAsync(session_id_, cb);
 	}
 	else
-		ShowMore(false);
+		ShowMore(false, false);
 }
 
-void MsgRecordForm::ShowMore(bool more)
+void MsgRecordForm::ShowMore(bool more, bool reverse)
 {
 	is_loading_ = true;
+	is_reverse_ = reverse;
 	QLOG_APP(L"query online msg begin: id={0} type={1} last_time={2} last_server_id={3}") <<session_id_ <<session_type_ <<farst_msg_time_ <<last_server_id_;
 	
-	nim::MsgLog::QueryMsgOnlineAsyncParam param;
-	param.id_ = session_id_;
-	param.to_type_ = session_type_;
-	param.limit_count_ = kMsgLogNumberShow;
-	param.from_time_ = 0;
-	param.end_time_ = farst_msg_time_;
-	param.end_msg_id_ = last_server_id_;
-	param.reverse_ = false;
-	param.need_save_to_local_ = true;
-	param.auto_download_attachment_ = true;
-	nim::MsgLog::QueryMsgCallback cb = nbase::Bind(&MsgRecordForm::QueryMsgOnlineCb, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+	if (is_local_msg_)
+	{
+		std::string json_extension = "";
+		if (reverse)
+		{
+			Json::Value json_extension_value;
+			json_extension_value["direction"] = 1;
+			Json::FastWriter fw;
+			json_extension = fw.write(json_extension_value);
+		}		
+		
+
+		//该接口搜索本地记录不支持反向，改用在线搜索
+		nim::MsgLog::QueryMsgCallback cb = nbase::Bind(&MsgRecordForm::QueryMsgOnlineCb, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+		nim::MsgLog::QueryMsgAsync(session_id_, session_type_, kMsgLogNumberShow, farst_msg_time_, cb, json_extension);
+	}
+	else
+	{
+		nim::MsgLog::QueryMsgOnlineAsyncParam param;
+		if (reverse)
+		{
+			param.from_time_ = farst_msg_time_;
+			param.end_time_ = farst_msg_time_ * 2;
+		}
+		else
+		{
+			param.from_time_ = 0;
+			param.end_time_ = farst_msg_time_;
+		}
+		
+		param.id_ = session_id_;
+		param.to_type_ = session_type_;
+		param.limit_count_ = kMsgLogNumberShow;		
+		param.end_msg_id_ = last_server_id_;
+		param.reverse_ = reverse;
+		param.need_save_to_local_ = true;
+		param.auto_download_attachment_ = true;
+		nim::MsgLog::QueryMsgCallback cb = nbase::Bind(&MsgRecordForm::QueryMsgOnlineCb, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+
+		nim::MsgLog::QueryMsgOnlineAsync(param, cb);
+	}
 	
-	nim::MsgLog::QueryMsgOnlineAsync(param,cb);
 }
 
 void MsgRecordForm::ShowMsgs(const std::vector<nim::IMMessage> &msg)
@@ -288,11 +319,12 @@ void MsgRecordForm::ShowMsgs(const std::vector<nim::IMMessage> &msg)
 			}
 			show_time = CheckIfShowTime(older_time, msg[i].timetag_);
 		}
-		ShowMsg(msg[i], true, show_time);
+		ShowMsg(msg[i], !is_reverse_, show_time);
 	}
 	//修正最近时间
 	if(first_show_msg_)
 	{
+		ShowMore(false, true);
 		first_show_msg_ = false;
 
 		msg_list_->EndDown(true, false);
@@ -345,8 +377,25 @@ void MsgRecordForm::QueryMsgOnlineCb(nim::NIMResCode code, const std::string& id
 
 		if (vec.size() < kMsgLogNumberShow)
 		{
-			has_more_ = false;
-			return;
+			if (is_list_top_)
+			{
+				front_has_more_ = false;
+			}
+			else
+			{
+				back_has_more_ = false;
+			}			
+		}
+		else
+		{
+			if (is_list_top_)
+			{
+				front_has_more_ = true;
+			}
+			else
+			{
+				back_has_more_ = true;
+			}
 		}
 	}
 }
@@ -406,5 +455,55 @@ void MsgRecordForm::OnStopAudioCallback( const std::string &cid, int code )
 			item->OnStopCallback(code);
 		}
 	}
+}
+
+void MsgRecordForm::RefreshRecord(std::string id, nim::NIMSessionType type, long long farst_msg_time, bool is_local_msg)
+{
+	if (id == session_id_)
+		return;
+	session_id_ = id;
+	session_type_ = type;
+
+	//初始化
+	first_show_msg_ = true;
+	last_msg_time_ = 0;
+	farst_msg_time_ = farst_msg_time;
+	last_server_id_ = 0;
+
+	front_has_more_ = true;
+	back_has_more_ = true;
+	is_loading_ = false;
+	is_local_msg_ = is_local_msg;
+
+	std::wstring name;
+	if (type == nim::kNIMSessionTypeP2P)
+		name = UserService::GetInstance()->GetUserName(id);
+	else
+		name = TeamService::GetInstance()->GetTeamName(id);
+	label_title_->SetText(name);
+	SetTaskbarTitle(name);
+
+	msg_list_->RemoveAll();
+	closure_befor_item_add_.clear();
+	id_bubble_pair_.clear();
+
+	AudioManager::GetInstance()->StopPlayAudio(nbase::UTF16ToUTF8(GetWindowId()));
+
+	if (type == nim::kNIMSessionTypeTeam)
+	{
+		nim::Team::QueryTeamMembersCallback cb = ToWeakCallback([this](const std::string& tid, int member_count, const std::list<nim::TeamMemberProperty>& props)
+		{
+			team_member_info_list_.clear();
+			for (const auto &info : props)
+				team_member_info_list_[info.GetAccountID()] = info;
+			ShowMore(false, false);
+		});
+		nim::Team::QueryTeamMembersAsync(session_id_, cb);
+	}
+	else
+	{
+		ShowMore(false, false);			
+	}
+		
 }
 }

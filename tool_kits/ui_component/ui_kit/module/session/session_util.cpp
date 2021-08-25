@@ -599,6 +599,20 @@ bool IsStickerMsg(nim::NIMMessageType msg_type, const std::string& msg_attach)
 	return false;
 }
 
+bool IsUserCardMsg(nim::NIMMessageType msg_type, const std::string& msg_attach)
+{
+	if (msg_type == nim::kNIMMessageTypeCustom)
+	{
+		Json::Value json;
+		if (StringToJson(msg_attach, json) && json.isObject())
+		{
+			return json["type"].asInt() == CustomMsgType_UserCard;
+		}
+	}
+	return false;
+}
+
+
 bool IsMeetingMsg(nim::NIMMessageType msg_type, const std::string& msg_attach)
 {
 	if (msg_type == nim::kNIMMessageTypeCustom)

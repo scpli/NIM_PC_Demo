@@ -1,6 +1,6 @@
 MESSAGE("############# nim_demo #############")
 
-SET(TARGET_NAME huiliao_pc)
+SET(TARGET_NAME Huiliao_pc)
 
 PROJECT(${TARGET_NAME} DESCRIPTION "Huiliao")
 

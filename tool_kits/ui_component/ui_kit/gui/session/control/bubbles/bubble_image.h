@@ -40,11 +40,27 @@ public:
 	*/
 	bool OnMenu(ui::EventArgs* arg);
 
+	void SetCurImageMsg();
+	/**
+	* 查找图片消息
+	* @param[in] forward 是否往前查找
+	* @return void 
+	*/
+	void QueryImageMsg(bool forward);
+
+	void QueryMsgOnlineCb(nim::NIMResCode code, const std::string& id, nim::NIMSessionType type, const nim::QueryMsglogResult& result);
+
 	/**
 	* 是否需要下载图片消息的原图
 	* @return bool 返回值true: 需要， false: 不需要
 	*/
 	virtual bool NeedDownloadResource();
+
+	/**
+	* 处理“复制”菜单项的操作
+	* @return void 无返回值
+	*/
+	virtual void OnMenuCopy();
 
 	/**
 * 是否需要下载消息项所需的资源 在合并转发的消息中使用

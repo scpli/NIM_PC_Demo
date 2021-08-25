@@ -166,7 +166,7 @@ public:
 	static const LPCSTR kCreateGroup;	//创建讨论组
 	static const LPCSTR kCreateTeam;	//创建高级群
 	static const LPCSTR kRetweetMessage;//转发消息
-
+	static const LPCSTR kUserCard; // 用户名片
 	/**
 	* 构造函数
 	* @param[in] uid_or_tid 指定调用联系人选择器的用户id或者群组id，也可以指定kCreateGroup等常量表明本窗口用于创建讨论组等

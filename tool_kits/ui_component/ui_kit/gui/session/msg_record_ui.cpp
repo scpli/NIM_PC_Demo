@@ -18,8 +18,11 @@ MsgRecordForm::MsgRecordForm()
 	farst_msg_time_ = 0;
 	last_server_id_ = 0;
 
-	has_more_ = true;
+	front_has_more_ = true;
+	back_has_more_ = true;
 	is_loading_ = false;
+	is_list_top_ = false;
+	is_local_msg_ = false;
 }
 
 MsgRecordForm::~MsgRecordForm()
@@ -106,14 +109,26 @@ bool MsgRecordForm::Notify(ui::EventArgs* param)
 		if(name == L"msg_list")
 		{
 			bool list_top= (msg_list_->GetScrollPos().cy <= 10);
-			if(list_top && has_more_ && !is_loading_)
+			bool list_last = (msg_list_->GetScrollPos().cy >= msg_list_->GetScrollRange().cy - 5);
+			if(list_top && front_has_more_ && !is_loading_)
 			{
 				is_loading_ = true;
 
 				LoadingTip(true);
 				msg_list_->SetScrollPosY(0);
+				is_list_top_ = true;
 
-				ShowMore(true);
+				ShowMore(true, false);
+			}
+			if (list_last && back_has_more_ && !is_loading_)
+			{
+				is_loading_ = true;
+
+				LoadingTip(true);
+				msg_list_->SetScrollPosY(msg_list_->GetScrollRange().cy);
+				is_list_top_ = false;
+
+				ShowMore(true, true);
 			}
 		}
 	}

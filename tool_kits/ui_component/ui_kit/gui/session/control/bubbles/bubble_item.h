@@ -15,6 +15,7 @@ enum BubbleEventType
 	BET_RECALL,		//撤回
 	BET_MENUATTA,	//右键菜单at
 	BET_UNREAD_COUNT,	//未读列表
+	BET_SHOW_CONTEXT,	//查看聊天记录上下文
 };
 
 namespace nim_comp
@@ -195,6 +196,8 @@ public:
 	* 设置获取群成员接口，当是群消息时可用 
 	*/
 	void SetTeamMemberGetter(const TeamMemberGetter& getter) { team_member_getter_ = getter; }
+
+	void SetContextShow(bool show);
 protected:
 	/** 
 	* 弹出右键菜单
@@ -285,6 +288,7 @@ private:
 	ui::Label*		status_receipt_;
 	ui::Control*	play_status_;
 	ui::CMenuWnd*	menu_;
+	ui::Button*		show_context_;
 protected:
 	nim::IMMessage			msg_;
 

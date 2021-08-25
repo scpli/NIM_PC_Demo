@@ -64,11 +64,11 @@ BEGIN
     BEGIN
         BLOCK "080404b0"
         BEGIN
-            VALUE "CompanyName", "NetEase"
+            VALUE "CompanyName", "广州初妆云计算科技有限公司"
             VALUE "FileDescription", "${PROJECT_DESCRIPTION}"
             VALUE "FileVersion", "${GIT_TAG}.${GIT_COMMIT_COUNT}"
             VALUE "InternalName", "${TARGET_NAME}.exe"
-            VALUE "LegalCopyright", "Copyright (C) 2020 NetEase. All rights reserved."
+            VALUE "LegalCopyright", "Copyright (C) 2020 chuzhuangyun. All rights reserved."
             VALUE "OriginalFilename", "${TARGET_NAME}.exe"
             VALUE "ProductName", "${TARGET_NAME}"
             VALUE "ProductVersion", "${GIT_TAG}.0"

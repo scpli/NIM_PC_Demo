@@ -2,6 +2,7 @@
 #include "session_list.h"
 #include "module/session/session_manager.h"
 #include "gui/main/team_event_form.h"
+#include "gui/main/search_msg.h"
 #include "duilib/Utils/MultiLangSupport.h"
 #include "ui_kit_base/invoke_safe_callback.h"
 #include "export/nim_ui_session_list_manager.h"
@@ -36,8 +37,11 @@ SessionList::SessionList(ui::VirtualListBox* session_list, ui::ListBox* top_sess
 	Box* multispot_and_events = (Box*)GlobalManager::CreateBox(L"main/main_session_multispot_and_event.xml");
 	top_session_list_->AddAt(multispot_and_events, 0);
 
-	ListContainerElement* cloud_session_list = (ListContainerElement*)GlobalManager::CreateBox(L"main/main_cloud_session.xml");
+	// 2020 09 注释本地会话与云端会话 切换功能
+	/*ListContainerElement* cloud_session_list = (ListContainerElement*)GlobalManager::CreateBox(L"main/main_cloud_session.xml");
 	top_session_list_->AddAt(cloud_session_list, 1);
+
+
 	ListContainerElement* local_session_list = (ListContainerElement*)GlobalManager::CreateBox(L"main/main_local_session.xml");
 	local_session_list->SetVisible(false);
 	top_session_list_->AddAt(local_session_list, 2);
@@ -55,12 +59,19 @@ SessionList::SessionList(ui::VirtualListBox* session_list, ui::ListBox* top_sess
 		cloud_session_list->SetVisible(true);
 		local_session_list->SetVisible(false);
 		return true;
-		}));
+		}));*/
 
 	ButtonBox* btn_events = (ButtonBox*)multispot_and_events->FindSubControl(L"btn_events");
 	ButtonBox* btn_multispot_info = (ButtonBox*)multispot_and_events->FindSubControl(L"multispot_info");
 	btn_events->AttachClick(nbase::Bind(&SessionList::OnEventsClick, this, std::placeholders::_1));
 	btn_multispot_info->AttachClick(nbase::Bind(&SessionList::OnMultispotClick, this, std::placeholders::_1));
+
+	// 2020 - 10 
+	ButtonBox* btn_search_events = (ButtonBox*)multispot_and_events->FindSubControl(L"btn_search_events");
+	btn_search_events->AttachClick(nbase::Bind(&SessionList::OnEventsClick, this, std::placeholders::_1));
+
+	btn_search_events->SetVisible(true);
+
 
 	box_unread_sysmsg_ = (Box*)top_session_list_->GetWindow()->FindControl(L"box_unread_sysmsg");
 	label_unread_sysmsg_ = (Label*)top_session_list_->GetWindow()->FindControl(L"label_unread_sysmsg");
@@ -747,6 +758,13 @@ bool SessionList::OnEventsClick(ui::EventArgs* param)
 	{
 		TeamEventForm* f = WindowsManager::SingletonShow<TeamEventForm>(TeamEventForm::kClassName);
 		f->ReloadEvents();
+	}
+
+	if (param->pSender->GetName() == L"btn_search_events")
+	{
+		SearchMsg* f = WindowsManager::SingletonShow<SearchMsg>(SearchMsg::kClassName);
+		f->setSessionList(session_list_sort_data_);
+		//f->ReloadEvents();
 	}
 
 	return true;

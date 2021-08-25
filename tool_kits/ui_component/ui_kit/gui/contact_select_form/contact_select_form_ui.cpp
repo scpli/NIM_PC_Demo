@@ -11,6 +11,7 @@ namespace nim_comp
 const LPCSTR ContactSelectForm::kCreateGroup = "CreateGroup";
 const LPCSTR ContactSelectForm::kCreateTeam = "CreateTeam";
 const LPCSTR ContactSelectForm::kRetweetMessage = "RetweetMessage";
+const LPCSTR ContactSelectForm::kUserCard = "UserCard";
 
 const LPCTSTR ContactSelectForm::kClassName = _T("ContactSelectForm");
 
@@ -80,6 +81,8 @@ void ContactSelectForm::InitWindow()
 		title_id = L"STRING_INVITEUSERFORM_CREATE_TEAM";
 	else if (uid_or_tid_ == kRetweetMessage)
 		title_id = L"STRING_INVITEUSERFORM_RETWEET_MSG";
+	else if (uid_or_tid_ == kUserCard) // 20201122
+		title_id = L"STRING_INVOKECHATFORM_USERCARD";
 	else
 		title_id = L"STRING_INVOKECHATFORM_CAPTION";
 

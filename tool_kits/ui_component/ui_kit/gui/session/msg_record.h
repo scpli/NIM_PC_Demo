@@ -74,7 +74,7 @@ public:
 	* @param[in] more 暂时无用 	
 	* @return void 无返回值
 	*/
-	void ShowMore(bool more);
+	void ShowMore(bool more, bool reverse);
 
 	/** 
 	* 获取会话记录的回调函数
@@ -130,6 +130,8 @@ public:
 	* @return void 无返回值
 	*/
 	void OnStopAudioCallback(const std::string &cid, int code);
+
+	void RefreshRecord(std::string id, nim::NIMSessionType type, long long farst_msg_time, bool is_local_msg);
 	
 private:
 	/**
@@ -169,8 +171,12 @@ private:
 	long long		farst_msg_time_; //最远的消息时间
 	long long		last_server_id_;
 
-	bool			has_more_;
+	bool			front_has_more_;
+	bool			back_has_more_;
 	bool			is_loading_;
+	bool			is_list_top_;
+	bool			is_local_msg_;
+	bool			is_reverse_;
 	
 	typedef std::map<std::string,MsgBubbleItem*> IdBubblePair;
 	IdBubblePair	id_bubble_pair_;

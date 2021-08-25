@@ -167,16 +167,34 @@ bool AddFriendWindow::Search(ui::EventArgs* param)
 	if (key.empty())
 		return false;
 
-	nim::User::GetUserNameCardCallback cb = ToWeakCallback([this](const std::list<nim::UserNameCard> uinfos) {
-		assert(nbase::MessageLoop::current()->ToUIMessageLoop());
-			if (!uinfos.empty())
-				InitUserProfile(*uinfos.cbegin());
-			else
-				PreOrNextClick(NULL, g_ADDFRIEND_NOTFOUND_PAGE, AddFriendWindow::NONE);
+	
 
-		SetFocus(nullptr);
+	//2020 get username from Appserver
+	QLOG_APP(L"Search pos 0001 ");
+
+	auto task = ToWeakCallback([this](int res, const std::string& accid,  const std::string& err_msg) {
+		QLOG_APP(L"Search pos task callback {0}, {1} ") << res << err_msg;
+
+		if (res == 200)
+		{
+			// skd search
+			nim::User::GetUserNameCardCallback cb = ToWeakCallback([this](const std::list<nim::UserNameCard> uinfos) {
+				assert(nbase::MessageLoop::current()->ToUIMessageLoop());
+				if (!uinfos.empty())
+					InitUserProfile(*uinfos.cbegin());
+				else
+					PreOrNextClick(NULL, g_ADDFRIEND_NOTFOUND_PAGE, AddFriendWindow::NONE);
+
+				SetFocus(nullptr);
+			});
+
+			nim::User::GetUserNameCardOnline(std::list<std::string>(1, accid), cb); //直接从服务器搜索
+			//nim::User::GetUserNameCardOnline(std::list<std::string>(1, key), cb); //直接从服务器搜索
+		}
+
 	});
-	nim::User::GetUserNameCardOnline(std::list<std::string>(1, key), cb); //直接从服务器搜索
+	app_sdk::AppSDKInterface::GetInstance()->InvokeGetAccidByUsername(key, task);	
+	
 
 	return true;
 }

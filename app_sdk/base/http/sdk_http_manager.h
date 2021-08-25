@@ -75,7 +75,7 @@ namespace app_sdk
 				return;			
 			std::string post("");
 			request_param->GetRequestContent(post);
-			if (!request_param->UsePostMethod() && post.empty())			
+			if (!request_param->UsePostMethod() && !post.empty())			
 					api.append(1, '?').append(post);
 			//回调
 			auto http_cb_op =

@@ -44,6 +44,8 @@ void MsgBubbleItem::InitControl(bool bubble_right)
 	play_status_ = this->FindSubControl(L"play_status");
 	status_receipt_ = (Label*)this->FindSubControl(L"status_receipt");
 
+	show_context_ = (Button*)this->FindSubControl(L"show_context");
+
 	HideAllStatus(0);
 }
 
@@ -242,6 +244,10 @@ bool MsgBubbleItem::OnClicked(ui::EventArgs* arg)
 	{
 		m_pWindow->SendNotify(this, ui::kEventNotify, BET_UNREAD_COUNT, 0);
 	}
+	else if (name == L"show_context")
+	{
+		m_pWindow->SendNotify(this, ui::kEventNotify, BET_SHOW_CONTEXT, 0);
+	}
 	return true;
 }
 
@@ -394,6 +400,11 @@ bool MsgBubbleItem::IsShowRecallButton()
 		ret = false;
 	}
 	return ret;
+}
+
+void MsgBubbleItem::SetContextShow(bool show)
+{
+	show_context_->SetVisible(true);
 }
 
 ThumbDecorate::ThumbDecorate() 

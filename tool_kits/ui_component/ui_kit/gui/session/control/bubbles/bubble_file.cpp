@@ -218,12 +218,14 @@ void MsgBubbleFile::SetMsgStatus(nim::NIMMsgLogStatus status)
 			progress_vertlayout_->SetVisible(false);
 			file_open_->SetVisible();
 			file_openducu_->SetVisible();
+			file_saveas_->SetVisible();
 			http_status_->SetText(ui::MutiLanSupport::GetInstance()->GetStringViaID(L"STRID_SESSION_FILESTATUS_DOWNLOADED").c_str());
 		} 
 		else
 		{
-			file_saveas_->SetVisible();
-			http_status_->SetText(ui::MutiLanSupport::GetInstance()->GetStringViaID(L"STRID_SESSION_FILESTATUS_UNDOWNLOADED").c_str());
+			/*file_saveas_->SetVisible();
+			http_status_->SetText(ui::MutiLanSupport::GetInstance()->GetStringViaID(L"STRID_SESSION_FILESTATUS_UNDOWNLOADED").c_str());*/
+			StartDownload();
 		}
 	}
 }
@@ -439,20 +441,15 @@ void MsgBubbleFile::StartDownload()
 		nim::NOS::ProgressCallback cb2 = nbase::Bind(&MsgBubbleFile::DownloadResourceProgressCallback1, this, \
 			std::placeholders::_1, std::placeholders::_2);
 
-		//自定义保存路径
-// 		std::wstring dir = nim::Tool::GetUserAppdataDir(LoginManager::GetInstance()->GetAccount());
-// 		dir += L"temp\\";
-// 		bool ret = nbase::CreateDirectoryW(dir);
-// 		nim::IMMessage msg = msg_;
-// 		std::wstring fileName;
-// 		ret = nbase::FilePathApartFileName(nbase::UTF8ToUTF16(msg.local_res_path_), fileName);
-// 		if (fileName.empty())
-// 		{
-// 			nim::IMFile file;
-// 			nim::Talk::ParseFileMessageAttach(msg, file);
-// 			fileName = nbase::UTF8ToUTF16(file.md5_);
-// 		}
-// 		msg.local_res_path_ = nbase::UTF16ToUTF8(dir + fileName);
+		if (local_path_.empty())
+		{
+			//自定义保存路径
+			std::wstring dir = nbase::UTF8ToUTF16(nim::Tool::GetUserAppdataDir(nim_comp::LoginManager::GetInstance()->GetAccount()));
+			dir += L"temp\\";
+			bool ret = nbase::CreateDirectoryW(dir);
+			msg_.local_res_path_ = nbase::UTF16ToUTF8(dir + nbase::UTF8ToUTF16(file_name_));
+			local_path_ = msg_.local_res_path_;
+		}		
 		nim::NOS::FetchMedia(msg_, cb1, cb2);
 
 		SetMsgStatus(nim::kNIMMsgLogStatusNone);

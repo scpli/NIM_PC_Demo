@@ -33,6 +33,13 @@ SessionBox* SessionManager::OpenSessionBox(std::string session_id, nim::NIMSessi
 		return NULL;
 	}
 
+	ui::UiRect shotrCutWinRect;
+	SessionBox *cur_session_box = GetFirstActiveSession();
+	if (cur_session_box != NULL)
+	{
+		shotrCutWinRect = cur_session_box->CloseShortCutWindow();
+	}
+
 	// 在当前列表中查找是否有要打开的会话
 	auto it_box = session_box_map_.find(session_id);
 	if (it_box != session_box_map_.end())
@@ -42,6 +49,10 @@ SessionBox* SessionManager::OpenSessionBox(std::string session_id, nim::NIMSessi
 		if (!reopen)
 		{
 			parent_form->SetActiveSessionBox(session_id);
+			if (shotrCutWinRect.GetWidth() > 0 && shotrCutWinRect.GetHeight() > 0)
+			{
+				it_box->second->OnBtnMsgShortCut(shotrCutWinRect);
+			}
 			return it_box->second;
 		}
 		else
@@ -63,8 +74,12 @@ SessionBox* SessionManager::OpenSessionBox(std::string session_id, nim::NIMSessi
 	{
 		session_box->GetSessionForm()->ActiveWindow();
 		session_box->GetSessionForm()->SetActiveSessionBox(session_id);
-	}
-		
+	}	
+	if (shotrCutWinRect.GetWidth() > 0 && shotrCutWinRect.GetHeight() > 0)
+	{
+		session_box->OnBtnMsgShortCut(shotrCutWinRect);
+	}	
+
 	return session_box;
 }
 

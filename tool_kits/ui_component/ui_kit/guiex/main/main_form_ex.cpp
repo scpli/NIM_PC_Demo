@@ -13,9 +13,12 @@
 #include "gui/plugins/session/session_plugin.h"
 #include "nim_service\module\subscribe_event\subscribe_event_manager.h"
 #include "main_form_menu.h"
+#include "export/nim_ui_all.h"
 //#include "OleIdl.h"
 #include "ShObjIdl.h"
 #include <shlobj.h>
+
+using namespace ui;
 
 namespace nim_comp
 {
@@ -87,22 +90,27 @@ namespace nim_comp
 	}
 	void MainFormEx::InitWindow()
 	{
+		if (nim_ui::UserConfig::GetInstance()->GetDefaultIcon() > 0)
+		{
+			SetIcon(nim_ui::UserConfig::GetInstance()->GetDefaultIcon());
+		}
+
 		SessionManager::GetInstance()->SetEnableMerge(false);
 		InitDragDrop();
 		main_bar_ = dynamic_cast<ui::VBox*>(FindControl(L"main_bar"));
 		main_plugins_bar_ = dynamic_cast<ui::VBox*>(FindControl(L"main_plugin_bar"));
-		simple_plugin_bar_ = dynamic_cast<ui::VBox*>(FindControl(L"simple_plugin_bar"));
+		//simple_plugin_bar_ = dynamic_cast<ui::VBox*>(FindControl(L"simple_plugin_bar"));
 		main_plugins_showpage_ = dynamic_cast<ui::TabBox*>(FindControl(L"main_plugins_showpage"));
 		btn_max_restore_ = static_cast<ui::Button*>(FindControl(L"btn_max_restore"));
 		btn_header_ = dynamic_cast<ui::Button*>(FindControl(L"btn_header"));
 		InitHeader();
 		btn_online_state_ = dynamic_cast<ui::Button*>(FindControl(L"btn_online_state"));
-		btn_online_state_->SetVisible(nim_comp::SubscribeEventManager::GetInstance()->IsEnabled());
-		btn_header_->AttachClick([this](ui::EventArgs* param) {
-			nim_comp::WindowsManager::GetInstance()->SingletonShow<nim_comp::ProfileMine>(nim_comp::ProfileMine::kClassName);
-			//nim_comp::ProfileForm::ShowProfileForm(nim_comp::LoginManager::GetInstance()->GetAccount());
+		btn_online_state_->SetVisible(nim_comp::SubscribeEventManager::GetInstance()->IsEnabled());		
+		btn_header_->AttachClick([this](ui::EventArgs* param){
+			//nim_comp::WindowsManager::GetInstance()->SingletonShow<nim_comp::ProfileMine>(nim_comp::ProfileMine::kClassName);
+			nim_comp::ProfileForm::ShowProfileForm(nim_comp::LoginManager::GetInstance()->GetAccount());
 			return true;
-			});
+		});
 		btn_online_state_->AttachClick(nbase::Bind(&MainFormEx::OnlineStateMenuButtonClick, this, std::placeholders::_1));
 		TrayIconManager::GetInstance()->AddTrayIconEventHandler(this);
 		auto hicon = ::ExtractIcon(nbase::win32::GetCurrentModuleHandle(), nbase::win32::GetCurrentModuleName().c_str(), 0);
@@ -286,8 +294,8 @@ namespace nim_comp
 		{
 			if (plugin->GetPluginType() == IMainPlugin::PluginType::PluginType_Main)
 				plugin_bar = main_plugins_bar_;
-			else if (plugin->GetPluginType() == IMainPlugin::PluginType::PluginType_Simple)
-				plugin_bar = simple_plugin_bar_;
+			/*else if(plugin->GetPluginType() == IMainPlugin::PluginType::PluginType_Simple)
+				plugin_bar = simple_plugin_bar_;*/
 			else
 				continue;
 			auto icon = plugin->GetPluginIcon();
@@ -467,8 +475,8 @@ namespace nim_comp
 	{
 		RECT rect = param->pSender->GetPos();
 		ui::CPoint point;
-		point.x = rect.left;
-		point.y = rect.top - 2;
+		point.x = rect.right + 20;
+		point.y = rect.bottom;
 		ClientToScreen(m_hWnd, &point);
 		main_menu_handler_->PopupMainMenu(point);
 		return true;

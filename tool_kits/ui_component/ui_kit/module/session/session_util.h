@@ -57,6 +57,7 @@ enum CustomMsgType
 	CustomMsgType_TransferFile,		//P2P传输文件
 	CustomMsgType_Meeting = 10,		//多人会议控制协议
 	CustomMsgType_MultiRetweet = 15,//多条消息合并转发
+	CustomMsgType_UserCard = 16, //用户名片
 };
 
 /**
@@ -232,6 +233,9 @@ bool IsSnapChatMsg(nim::NIMMessageType msg_type, const std::string& msg_attach);
 * @return bool true 包含，false 不包含
 */
 bool IsStickerMsg(nim::NIMMessageType msg_type, const std::string& msg_attach);
+
+
+bool IsUserCardMsg(nim::NIMMessageType msg_type, const std::string& msg_attach);
 
 /**
 * 会话消息是否为多人会议控制协议类型的消息
